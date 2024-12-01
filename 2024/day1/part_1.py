@@ -1,24 +1,23 @@
 import os
+from typing import List
 
 script_dir = os.path.dirname(__file__)
-input_file_path = os.path.join(script_dir, 'input.txt')
+input_file_path = os.path.join(script_dir, "input.txt")
 
-with open(input_file_path, 'r') as file:
-    data = file.read()
 
-    list_1 = []
-    list_2 = []
+def main() -> None:
+    with open(input_file_path, "r") as file:
+        data = file.read().splitlines()
 
-    for line in data.splitlines():
-        parts = line.split()
-        list_1.append(parts[0])
-        list_2.append(parts[1])
+    list_1, list_2 = zip(*(line.split() for line in data))
 
-    list_1.sort()
-    list_2.sort()
+    list_1 = sorted(list_1)
+    list_2 = sorted(list_2)
 
-    zipped_lists = list(zip(list_1, list_2))
-
-    distances = [abs(int(x)-int(y)) for x, y in zipped_lists]
+    distances: List[int] = [abs(int(x) - int(y)) for x, y in zip(list_1, list_2)]
 
     print(sum(distances))
+
+
+if __name__ == "__main__":
+    main()
