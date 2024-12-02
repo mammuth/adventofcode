@@ -33,18 +33,47 @@ def is_safe(report: List[str], debug: bool) -> bool:
                 print(report, "unsafe because of difference between adjacent levels")
             return False
 
-    print(report, "safe")
+    if debug:
+        print(report, "safe")
     return True
 
 
-def main() -> None:
+def is_safe_with_tolerance(report: List[str], debug: bool) -> bool:
+    # todo this should rather be a recursive function with tolerance: int as a parameter
+    #   but the is_safe function I wrote for part1 was annoying to refactor to support that...
+    if is_safe(report, debug=debug):
+        return True
+
+    levels: List[int] = list(map(int, report.split()))
+    for index, _ in enumerate(levels):
+        modified_levels = levels.copy()
+        del modified_levels[index]
+
+        modified_report = " ".join(map(str, modified_levels))
+        if is_safe(modified_report, debug=False):
+            if debug:
+                print(report, "safe after removing", levels[index])
+            return True
+
+    if debug:
+        print(report, "unsafe")
+    return False
+
+
+def main(debug: bool) -> None:
     with open(input_file_path, "r") as file:
         reports = file.read().splitlines()
 
-    safe_reports = len([report for report in reports if is_safe(report, debug=True)])
+    safe_reports = len([report for report in reports if is_safe(report, debug=debug)])
 
     print("Part 1:", safe_reports)
 
+    safe_reports = len(
+        [report for report in reports if is_safe_with_tolerance(report, debug=debug)]
+    )
+
+    print("Part 2:", safe_reports)
+
 
 if __name__ == "__main__":
-    main()
+    main(debug=False)
